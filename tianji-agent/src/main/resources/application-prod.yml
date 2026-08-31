@@ -1,0 +1,35 @@
+spring:
+  datasource:
+    url: ${AGENT_DB_URL:jdbc:mysql://mysql:3306/tj_agent?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true}
+    username: ${AGENT_DB_USERNAME:root}
+    password: ${AGENT_DB_PASSWORD:}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+
+management:
+  health:
+    rabbit:
+      enabled: true
+    redis:
+      enabled: true
+
+agent:
+  discovery:
+    enabled: ${AGENT_NACOS_ENABLED:true}
+  ai:
+    enabled: true
+    protocol: ${AGENT_AI_PROTOCOL:CHAT_COMPLETIONS}
+    base-url: ${AGENT_AI_BASE_URL:https://api.openai.com/v1}
+    api-key: ${AGENT_AI_API_KEY:}
+    chat-model: ${AGENT_AI_CHAT_MODEL:gpt-4o-mini}
+    embedding-model: ${AGENT_AI_EMBEDDING_MODEL:text-embedding-3-small}
+    embedding-base-url: ${AGENT_AI_EMBEDDING_BASE_URL:}
+    embedding-api-key: ${AGENT_AI_EMBEDDING_API_KEY:}
+    embedding-provider: ${AGENT_AI_EMBEDDING_PROVIDER:LOCAL_HASH}
+  qdrant:
+    enabled: true
+  memory:
+    redis-enabled: true

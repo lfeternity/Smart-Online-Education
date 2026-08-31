@@ -1,0 +1,5 @@
+# Local build, test, and browser-run artifacts
+.playwright-cli/
+output/
+tianji-agent/target/
+

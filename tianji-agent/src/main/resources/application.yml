@@ -1,0 +1,163 @@
+server:
+  port: ${SERVER_PORT:8094}
+  shutdown: graceful
+  error:
+    include-message: never
+
+spring:
+  application:
+    name: agent-service
+  datasource:
+    url: ${AGENT_DB_URL:jdbc:h2:mem:tj_agent;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE}
+    username: ${AGENT_DB_USERNAME:sa}
+    password: ${AGENT_DB_PASSWORD:}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: ${AGENT_DDL_AUTO:update}
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: Asia/Shanghai
+  flyway:
+    enabled: ${AGENT_FLYWAY_ENABLED:false}
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 2s
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+
+agent:
+  ai:
+    enabled: ${AGENT_AI_ENABLED:false}
+    api-key: ${AGENT_AI_API_KEY:}
+    protocol: ${AGENT_AI_PROTOCOL:CHAT_COMPLETIONS}
+    base-url: ${AGENT_AI_BASE_URL:https://api.openai.com/v1}
+    embedding-base-url: ${AGENT_AI_EMBEDDING_BASE_URL:}
+    embedding-api-key: ${AGENT_AI_EMBEDDING_API_KEY:}
+    embedding-provider: ${AGENT_AI_EMBEDDING_PROVIDER:OPENAI}
+    chat-model: ${AGENT_AI_CHAT_MODEL:gpt-4o-mini}
+    embedding-model: ${AGENT_AI_EMBEDDING_MODEL:text-embedding-3-small}
+    temperature: ${AGENT_AI_TEMPERATURE:0.2}
+    timeout: ${AGENT_AI_TIMEOUT:30s}
+    max-tool-calls: ${AGENT_MAX_TOOL_CALLS:4}
+    retrieval-top-k: ${AGENT_RETRIEVAL_TOP_K:8}
+    retrieval-candidate-k: ${AGENT_RETRIEVAL_CANDIDATE_K:30}
+    retrieval-min-score: ${AGENT_RETRIEVAL_MIN_SCORE:0.55}
+    input-price-micros-per-1k: ${AGENT_AI_INPUT_PRICE_MICROS_PER_1K:0}
+    output-price-micros-per-1k: ${AGENT_AI_OUTPUT_PRICE_MICROS_PER_1K:0}
+    price-version: ${AGENT_AI_PRICE_VERSION:unpriced}
+    fallback:
+      enabled: ${AGENT_AI_FALLBACK_ENABLED:false}
+      api-key: ${AGENT_AI_FALLBACK_API_KEY:}
+      protocol: ${AGENT_AI_FALLBACK_PROTOCOL:CHAT_COMPLETIONS}
+      base-url: ${AGENT_AI_FALLBACK_BASE_URL:}
+      chat-model: ${AGENT_AI_FALLBACK_CHAT_MODEL:}
+      temperature: ${AGENT_AI_FALLBACK_TEMPERATURE:0.2}
+    circuit:
+      failure-threshold: ${AGENT_AI_CIRCUIT_FAILURE_THRESHOLD:3}
+      open-duration: ${AGENT_AI_CIRCUIT_OPEN_DURATION:30s}
+  qdrant:
+    enabled: ${AGENT_QDRANT_ENABLED:false}
+    base-url: ${QDRANT_URL:http://localhost:6333}
+    collection: ${QDRANT_COLLECTION:course_knowledge_v1}
+    dimension: ${QDRANT_DIMENSION:1536}
+    api-key: ${QDRANT_API_KEY:}
+  clients:
+    course-base-url: ${COURSE_SERVICE_URL:http://localhost:8086}
+    learning-base-url: ${LEARNING_SERVICE_URL:http://localhost:8090}
+    exam-base-url: ${EXAM_SERVICE_URL:http://localhost:8089}
+    search-base-url: ${SEARCH_SERVICE_URL:http://localhost:8083}
+    timeout: ${AGENT_CLIENT_TIMEOUT:3s}
+  memory:
+    redis-enabled: ${AGENT_REDIS_MEMORY_ENABLED:false}
+    max-messages: ${AGENT_MEMORY_MAX_MESSAGES:12}
+    ttl: ${AGENT_MEMORY_TTL:24h}
+  security:
+    user-header: user-info
+    role-header: role-info
+    admin-user-ids: ${AGENT_ADMIN_USER_IDS:}
+    admin-role-ids: ${AGENT_ADMIN_ROLE_IDS:}
+    teacher-role-ids: ${AGENT_TEACHER_ROLE_IDS:}
+    allow-anonymous-health: true
+    jwt-enabled: ${AGENT_JWT_ENABLED:false}
+    jwk-set-uri: ${AGENT_JWT_JWK_SET_URI:}
+    issuer-uri: ${AGENT_JWT_ISSUER_URI:}
+    required-audience: ${AGENT_JWT_AUDIENCE:}
+  limits:
+    enabled: ${AGENT_LIMITS_ENABLED:true}
+    redis-enabled: ${AGENT_LIMITS_REDIS_ENABLED:false}
+    requests-per-minute: ${AGENT_REQUESTS_PER_MINUTE:20}
+    concurrent-streams: ${AGENT_CONCURRENT_STREAMS:2}
+    messages-per-day: ${AGENT_MESSAGES_PER_DAY:200}
+    tokens-per-day: ${AGENT_TOKENS_PER_DAY:200000}
+    global-tokens-per-day: ${AGENT_GLOBAL_TOKENS_PER_DAY:20000000}
+    cost-micros-per-day: ${AGENT_COST_MICROS_PER_DAY:0}
+    global-cost-micros-per-day: ${AGENT_GLOBAL_COST_MICROS_PER_DAY:0}
+  knowledge:
+    mq-enabled: ${AGENT_KNOWLEDGE_MQ_ENABLED:false}
+    ingestion-user-id: ${AGENT_INGESTION_USER_ID:1}
+    max-retries: ${AGENT_INGESTION_MAX_RETRIES:3}
+    retry-poll-delay: ${AGENT_INGESTION_RETRY_POLL_DELAY:5s}
+    retry-base-delay: ${AGENT_INGESTION_RETRY_BASE_DELAY:10s}
+  rerank:
+    enabled: ${AGENT_RERANK_ENABLED:false}
+    base-url: ${AGENT_RERANK_BASE_URL:}
+    endpoint: ${AGENT_RERANK_ENDPOINT:/rerank}
+    api-key: ${AGENT_RERANK_API_KEY:}
+    model: ${AGENT_RERANK_MODEL:rerank-multilingual-v3.0}
+    timeout: ${AGENT_RERANK_TIMEOUT:5s}
+  asr:
+    enabled: ${AGENT_ASR_ENABLED:false}
+    base-url: ${AGENT_ASR_BASE_URL:}
+    endpoint: ${AGENT_ASR_ENDPOINT:/audio/transcriptions}
+    api-key: ${AGENT_ASR_API_KEY:}
+    model: ${AGENT_ASR_MODEL:whisper-1}
+    timeout: ${AGENT_ASR_TIMEOUT:2m}
+    max-file-bytes: ${AGENT_ASR_MAX_FILE_BYTES:52428800}
+  discovery:
+    enabled: ${AGENT_NACOS_ENABLED:false}
+    server-addr: ${NACOS_SERVER_ADDR:localhost:8848}
+    service-name: ${AGENT_NACOS_SERVICE_NAME:agent-service}
+    group: ${NACOS_GROUP:DEFAULT_GROUP}
+    namespace: ${NACOS_NAMESPACE:}
+    cluster: ${NACOS_CLUSTER:DEFAULT}
+    username: ${NACOS_USERNAME:}
+    password: ${NACOS_PASSWORD:}
+    ip: ${AGENT_NACOS_IP:}
+    port: ${AGENT_NACOS_PORT:0}
+    fail-fast: ${AGENT_NACOS_FAIL_FAST:false}
+
+management:
+  tracing:
+    sampling:
+      probability: ${AGENT_TRACE_SAMPLE_RATE:0.1}
+  otlp:
+    tracing:
+      endpoint: ${AGENT_OTLP_ENDPOINT:http://localhost:4318/v1/traces}
+      export:
+        enabled: ${AGENT_OTLP_ENABLED:false}
+  health:
+    rabbit:
+      enabled: ${AGENT_RABBIT_HEALTH_ENABLED:false}
+    redis:
+      enabled: ${AGENT_REDIS_HEALTH_ENABLED:false}
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+logging:
+  level:
+    com.tianji.agent: INFO
+    dev.langchain4j: WARN
